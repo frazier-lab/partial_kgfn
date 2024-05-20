@@ -1,5 +1,5 @@
 # Bayesian Optimization of Function Networks with Partial Evaluations
-This is the code repository for the paper titled "Bayesian optimization of function networks with partial evaluations", accepted at ICML 2024.
+This is the code repository for the paper titled "Bayesian optimization of function networks with partial evaluations", accepted at [ICML 2024](https://icml.cc/virtual/2024/poster/32902).
 
 
 ### Brief overview
