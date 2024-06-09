@@ -10,7 +10,7 @@ from torch import Tensor
 from decoupled_kg.models.dag import DAG
 
 
-class Rebuttal3(SyntheticTestFunction):
+class GPs1(SyntheticTestFunction):
     n_nodes = 2
     impose_assumption = True
     node_groups = [[0], [1]]
