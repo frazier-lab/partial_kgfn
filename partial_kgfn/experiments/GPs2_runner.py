@@ -11,7 +11,7 @@ from memory_profiler import profile
 
 from decoupled_kg.models.dag import DAG
 from decoupled_kg.run_one_trial import parse, run_one_trial
-from decoupled_kg.test_functions.rebuttal4 import Rebuttal4
+from decoupled_kg.test_functions.GPs2 import GPs2
 
 warnings.filterwarnings("ignore")
 torch.set_default_dtype(torch.float64)
@@ -47,8 +47,8 @@ def main(
     }
     if costs not in cost_options:
         raise ValueError(f"Invalid cost option: {costs}")
-    problem = Rebuttal4(node_costs=cost_options[costs])
-    problem_name = "reb4"
+    problem = GPs2(node_costs=cost_options[costs])
+    problem_name = "GPs2"
     network_objective = GenericMCObjective(lambda Y: Y[..., -1])
     # set comparison metrics
     metrics = ["obs_val", "pos_mean"]  # obs_val  pos_mean
