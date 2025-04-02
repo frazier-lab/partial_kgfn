@@ -29,11 +29,6 @@ from botorch.optim.optimize import optimize_acqf
 from botorch.sampling.normal import SobolQMCNormalSampler
 from botorch.test_functions import SyntheticTestFunction
 from botorch.utils.sampling import draw_sobol_samples
-from fast_kgfn.test_functions.ack_mat import AckleyMatyasFunctionNetwork
-from fast_kgfn.test_functions.ackley_sin import AckleyFunctionNetwork
-from fast_kgfn.test_functions.freesolv3 import Freesolv3FunctionNetwork
-from fast_kgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
-from fast_kgfn.test_functions.pharmaceutical import PharmaFunctionNetwork
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor, normal
 from torch.distributions.multivariate_normal import MultivariateNormal
@@ -50,6 +45,11 @@ from partial_kgfn.models.decoupled_gp_network import (
 from partial_kgfn.optim.discrete_kgfn_optim import (
     optimize_discrete_acqf_for_function_network,
 )
+from partial_kgfn.test_functions.ack_mat import AckleyMatyasFunctionNetwork
+from partial_kgfn.test_functions.ackley_sin import AckleyFunctionNetwork
+from partial_kgfn.test_functions.freesolv3 import Freesolv3FunctionNetwork
+from partial_kgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
+from partial_kgfn.test_functions.pharmaceutical import PharmaFunctionNetwork
 from partial_kgfn.utils.construct_obs_set import construct_obs_set
 from partial_kgfn.utils.EIFN_optimize_acqf import optimize_acqf_and_get_suggested_point
 from partial_kgfn.utils.gen_batch_x_fantasies import GenbatchXFantasiesFN
