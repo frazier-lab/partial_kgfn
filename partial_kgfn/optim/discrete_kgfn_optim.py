@@ -13,12 +13,12 @@ from typing import Any, List, Optional, Tuple
 import numpy as np
 import torch
 from botorch.acquisition import AcquisitionFunction
+from botorch.acquisition.fixed_feature import FixedFeatureAcquisitionFunction
 from botorch.logging import logger
+from botorch.optim.optimize import optimize_acqf
 from torch import Tensor
 
-from botorch.acquisition.fixed_feature import FixedFeatureAcquisitionFunction
-from partial_pkgfn.models.decoupled_gp_network import GaussianProcessNetwork
-from botorch.optim.optimize import optimize_acqf
+from partial_kgfn.models.decoupled_gp_network import GaussianProcessNetwork
 
 
 def optimize_discrete_acqf_for_function_network(

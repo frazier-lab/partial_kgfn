@@ -25,36 +25,35 @@ from botorch.acquisition.objective import GenericMCObjective, MCAcquisitionObjec
 from botorch.logging import logger
 from botorch.models.model import Model
 from botorch.optim import optimize_acqf as botorch_optimize_acqf
+from botorch.optim.optimize import optimize_acqf
 from botorch.sampling.normal import SobolQMCNormalSampler
 from botorch.test_functions import SyntheticTestFunction
 from botorch.utils.sampling import draw_sobol_samples
-from gpytorch.mlls import ExactMarginalLogLikelihood
-from torch import Tensor, normal
-from torch.distributions.multivariate_normal import MultivariateNormal
-
-from partial_pkgfn.acquisition.full_kgfn import FullKnowledgeGradientFN
-from partial_pkgfn.acquisition.partial_kgfn import PartialKnowledgeGradientFN
-from partial_pkgfn.acquisition.FN_realization import FN_realization
-from partial_pkgfn.acquisition.tsfn import ThompsonSamplingFN
-from partial_pkgfn.models.decoupled_gp_network import (
-    GaussianProcessNetwork,
-    fit_gp_network,
-    initialize_GP,
-)
-from partial_pkgfn.optim.discrete_kgfn_optim import optimize_discrete_acqf_for_function_network
-from partial_pkgfn.optim.discrete_kgfn_optim import (
-    optimize_discrete_acqf_for_function_network,
-)
-from botorch.optim.optimize import optimize_acqf
 from fast_kgfn.test_functions.ack_mat import AckleyMatyasFunctionNetwork
 from fast_kgfn.test_functions.ackley_sin import AckleyFunctionNetwork
 from fast_kgfn.test_functions.freesolv3 import Freesolv3FunctionNetwork
 from fast_kgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
 from fast_kgfn.test_functions.pharmaceutical import PharmaFunctionNetwork
-from partial_pkgfn.utils.construct_obs_set import construct_obs_set
-from partial_pkgfn.utils.EIFN_optimize_acqf import optimize_acqf_and_get_suggested_point
-from partial_pkgfn.utils.gen_batch_x_fantasies import GenbatchXFantasiesFN
-from partial_pkgfn.utils.posterior_mean import PosteriorMean
+from gpytorch.mlls import ExactMarginalLogLikelihood
+from torch import Tensor, normal
+from torch.distributions.multivariate_normal import MultivariateNormal
+
+from partial_kgfn.acquisition.FN_realization import FN_realization
+from partial_kgfn.acquisition.full_kgfn import FullKnowledgeGradientFN
+from partial_kgfn.acquisition.partial_kgfn import PartialKnowledgeGradientFN
+from partial_kgfn.acquisition.tsfn import ThompsonSamplingFN
+from partial_kgfn.models.decoupled_gp_network import (
+    GaussianProcessNetwork,
+    fit_gp_network,
+    initialize_GP,
+)
+from partial_kgfn.optim.discrete_kgfn_optim import (
+    optimize_discrete_acqf_for_function_network,
+)
+from partial_kgfn.utils.construct_obs_set import construct_obs_set
+from partial_kgfn.utils.EIFN_optimize_acqf import optimize_acqf_and_get_suggested_point
+from partial_kgfn.utils.gen_batch_x_fantasies import GenbatchXFantasiesFN
+from partial_kgfn.utils.posterior_mean import PosteriorMean
 
 tkwargs = {
     "dtype": torch.double,

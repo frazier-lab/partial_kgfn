@@ -21,8 +21,8 @@ from botorch.test_functions.synthetic import SyntheticTestFunction
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor
 
-from partial_pkgfn.models.dag import DAG
-from partial_pkgfn.models.decoupled_gp_network import (
+from partial_kgfn.models.dag import DAG
+from partial_kgfn.models.decoupled_gp_network import (
     GaussianProcessNetwork,
     fit_gp_network,
     initialize_GP,
@@ -46,7 +46,7 @@ class Freesolv3FunctionNetwork(SyntheticTestFunction):
     node_groups = [[0], [1]]
 
     # Specify the main and alternative directories
-    loading_directory = "./partial_pkgfn/test_functions/"
+    loading_directory = "./partial_kgfn/test_functions/"
 
     data = pd.read_csv(f"{loading_directory}freesolv_NN_rep3dim.csv")
     data_tensor = torch.tensor(data.values)

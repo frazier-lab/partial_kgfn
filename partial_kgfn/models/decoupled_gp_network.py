@@ -23,8 +23,8 @@ from botorch.test_functions import SyntheticTestFunction
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor
 
-from partial_pkgfn.models.dag import DAG
-from partial_pkgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
+from partial_kgfn.models.dag import DAG
+from partial_kgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
 
 tkwargs = {
     "dtype": torch.double,

@@ -16,7 +16,7 @@ from botorch.test_functions.synthetic import SyntheticTestFunction
 from botorch.utils.gp_sampling import get_gp_samples
 from torch import Tensor
 
-from partial_pkgfn.models.dag import DAG
+from partial_kgfn.models.dag import DAG
 
 
 class ManufacturingGPNetwork(SyntheticTestFunction):

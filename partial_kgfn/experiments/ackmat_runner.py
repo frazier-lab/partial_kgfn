@@ -13,8 +13,8 @@ import torch
 from botorch.acquisition.objective import GenericMCObjective
 from botorch.settings import debug
 
-from partial_pkgfn.run_one_trial import parse, run_one_trial
-from partial_pkgfn.test_functions.ack_mat import AckleyMatyasFunctionNetwork
+from partial_kgfn.run_one_trial import parse, run_one_trial
+from partial_kgfn.test_functions.ack_mat import AckleyMatyasFunctionNetwork
 
 warnings.filterwarnings("ignore")
 torch.set_default_dtype(torch.float64)
