@@ -7,8 +7,6 @@ from botorch.acquisition.objective import (
     PosteriorTransform,
 )
 from botorch.settings import debug
-from memory_profiler import profile
-
 from decoupled_kg.models.dag import DAG
 from decoupled_kg.run_one_trial import parse, run_one_trial
 from decoupled_kg.test_functions.GPs1 import GPs1
@@ -23,7 +21,7 @@ logger.setLevel(logging.INFO)
 logger.handlers.pop()
 
 
-@profile
+
 def main(
     trial: int,
     algo: str,
