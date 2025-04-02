@@ -16,9 +16,9 @@ from botorch.acquisition.objective import (
 )
 from botorch.settings import debug
 
-from fast_pkgfn.models.dag import DAG
-from fast_pkgfn.run_one_trial import parse, run_one_trial
-from fast_pkgfn.test_functions.freesolv import Freesolv3FunctionNetwork
+from partial_pkgfn.models.dag import DAG
+from partial_pkgfn.run_one_trial import parse, run_one_trial
+from partial_pkgfn.test_functions.freesolv3 import Freesolv3FunctionNetwork
 
 warnings.filterwarnings("ignore")
 torch.set_default_dtype(torch.float64)
