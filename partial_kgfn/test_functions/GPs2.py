@@ -129,7 +129,7 @@ class GPs2(SyntheticTestFunction):
             return self.function3(X)
 
         if idx is None:
-            output = torch.empty(input_shape[:-1] + torch.Size([self.n_nodes])).to(X)
+            output = torch.empty(input_shape[:-1] + torch.Size([self.n_nodes])).to(torch.double)
             output[..., [0]] = f_0(X[..., [0]])
             output[..., [1]] = f_1(X[..., [1]])
             output[..., [2]] = f_2(X[..., [2]])

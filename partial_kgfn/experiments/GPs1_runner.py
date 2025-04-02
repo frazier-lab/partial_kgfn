@@ -28,6 +28,8 @@ def main(
     algo: str,
     costs: str,
     budget: int,
+    noisy: bool = False,
+    impose_assump: bool = False,
 ) -> None:
     """Run one replication for the dropwave function network test problem
 
@@ -62,6 +64,8 @@ def main(
         n_init_evals=2 * problem.dim + 1,
         budget=budget,
         objective=network_objective,
+        noisy=noisy,
+        impose_assump=impose_assump,
     )
 
 

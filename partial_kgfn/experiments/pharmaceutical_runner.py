@@ -28,6 +28,7 @@ def main(
     costs: str,
     budget: int,
     noisy: bool = False,
+    impose_assump: bool = False,
 ) -> None:
     """Run one replication for the pharmaceutical test problem.
 
@@ -64,6 +65,7 @@ def main(
         budget=budget,
         objective=network_objective,
         noisy=noisy,
+        impose_assump=impose_assump
     )
 
 
