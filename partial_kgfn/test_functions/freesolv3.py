@@ -46,7 +46,7 @@ class Freesolv3FunctionNetwork(SyntheticTestFunction):
     node_groups = [[0], [1]]
 
     # Specify the main and alternative directories
-    loading_directory = "./partial_pkgfn/test_functions/supporting_data/"
+    loading_directory = "./partial_pkgfn/test_functions/"
 
     data = pd.read_csv(f"{loading_directory}freesolv_NN_rep3dim.csv")
     data_tensor = torch.tensor(data.values)
