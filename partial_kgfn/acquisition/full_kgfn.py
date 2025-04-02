@@ -23,7 +23,7 @@ from botorch.utils.sampling import draw_sobol_samples
 from botorch.utils.transforms import t_batch_mode_transform
 from torch import Tensor
 
-from partial_kgfn.utils.construct_obs_set import construct_obs_set
+from fast_pkgfn.utils.construct_obs_set import construct_obs_set
 
 TAcqfArgConstructor = Callable[[Model, Tensor], Dict[str, Any]]
 tkwargs = {
