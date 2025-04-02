@@ -14,7 +14,7 @@ import torch
 from botorch.test_functions.synthetic import Ackley, SyntheticTestFunction
 from torch import Tensor
 
-from partial_kgfn.models.dag import DAG
+from fast_pkgfn.models.dag import DAG
 
 
 class AckleyMatyasFunctionNetwork(SyntheticTestFunction):
@@ -22,7 +22,6 @@ class AckleyMatyasFunctionNetwork(SyntheticTestFunction):
     node_groups = [[0], [1]]
     parent_nodes = [[], [0]]
     dag = DAG(parent_nodes=parent_nodes)
-    impose_assumption = False
 
     def __init__(
         self, node_costs: List[Union[float, int]], dim: int = 6, **kwargs
