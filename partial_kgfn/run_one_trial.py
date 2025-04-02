@@ -95,6 +95,8 @@ def run_one_trial(
     """
     # options = {} or options
     # Get script directory
+    if algo == 'fast_pKGFN' and impose_assump == True:
+        raise ValueError(f"fast_pKGFN currently does not support upstream-downstream dependencies. Only support when impose_assump=False.")
     results_dir = f"./results/{problem_name}_{'_'.join(str(x) for x in problem.node_costs)}/{algo}/"
     os.makedirs(results_dir, exist_ok=True)
     if objective is None:
