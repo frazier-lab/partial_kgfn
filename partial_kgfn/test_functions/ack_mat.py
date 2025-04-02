@@ -14,7 +14,7 @@ import torch
 from botorch.test_functions.synthetic import Ackley, SyntheticTestFunction
 from torch import Tensor
 
-from fast_pkgfn.models.dag import DAG
+from partial_pkgfn.models.dag import DAG
 
 
 class AckleyMatyasFunctionNetwork(SyntheticTestFunction):
