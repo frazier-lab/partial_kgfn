@@ -19,10 +19,12 @@ from botorch.models.transforms import Standardize
 from botorch.models.transforms.input import Normalize
 from botorch.posteriors import TorchPosterior
 from botorch.sampling import MCSampler
+from botorch.test_functions import SyntheticTestFunction
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor
 
-from partial_kgfn.models.dag import DAG
+from fast_pkgfn.models.dag import DAG
+from fast_pkgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
 
 tkwargs = {
     "dtype": torch.double,
@@ -43,8 +45,8 @@ class GaussianProcessNetwork(Model):
         node_dims: Optional[List[List[int]]] = None,
         train_Yvar: Optional[List[Tensor]] = None,
         node_GPs: Optional[List[Model]] = None,
+        problem: Optional[SyntheticTestFunction] = None,
         noisy: Optional[bool] = False,
-        modified_prior: Optional[bool] = False,
     ) -> None:
         r"""Initiate a Gaussian process network model.
 
@@ -57,14 +59,14 @@ class GaussianProcessNetwork(Model):
                 function network.
             active_input_indices: A length-`n-nodes` list of active input indices, where
                 the `k`-th element is the indices of active inputs of `X` for node `k`.
+            node_groups: A list of list of integers representing groups of nodes in function networks. 
+                Nodes in the same group must have same types of inputs and must be evaluated simultaneously.
+            node_dims: A list of integers representing inputs' dimension of each node
             train_Yvar: A length-`n_nodes` list of training output variance, where the
                 `k`-th element is the trainint output for node `k` (Optional).
-            node_groups: A list of list indicating nodes in each group
-            node_dims: A list of list indicating the number of input dimension of each node group
             node_GPs: A length-`n-nodes` list of GPs representing the function nodes
                 in the function network (Optional).
-            noisy: A boolean indicating whether the observations are noisy
-            modified_prior: A boolean indicating whether to use the default prior for GP hyperparameters
+            problem: A problem class representing the test case being considered
 
         Returns:
             None
@@ -86,8 +88,11 @@ class GaussianProcessNetwork(Model):
         else:
             self.train_Yvar = [
                 torch.ones_like(self.train_Y[k]) * 1e-6 for k in range(self.n_nodes)
-            ]
-        self.modified_prior = modified_prior
+            ]  
+        if isinstance(problem, ManufacturingGPNetwork):
+            self.modify_prior = True
+        else:
+            self.modify_prior = False
         if node_GPs is not None:
             self.node_GPs = node_GPs
         else:
@@ -98,7 +103,7 @@ class GaussianProcessNetwork(Model):
                     train_X=self.train_X[k],
                     train_Y=self.train_Y[k],
                     train_Yvar=self.train_Yvar[k],
-                    modified_prior=self.modified_prior,
+                    modified_prior=self.modify_prior,
                     noisy=self.noisy,
                 )
 
@@ -119,6 +124,9 @@ class GaussianProcessNetwork(Model):
     @property
     def batch_shape(self) -> torch.Size:
         """compute the batch shape of the GaussianProcessNetwork model."""
+        # gp_batch_shapes = [gp.batch_shape for gp in self.node_GPs]
+        # idx = torch.argmax(torch.Tensor([len(shape) for shape in gp_batch_shapes]))
+        # gp_batch_shape = gp_batch_shapes[idx]
         gp_batch_shape = torch.broadcast_shapes(
             *[gp.batch_shape for gp in self.node_GPs]
         )
@@ -150,6 +158,14 @@ class GaussianProcessNetwork(Model):
             self.node_GPs, self.dag, X, self.active_input_indices
         )
 
+    # def forward(self, X: Tensor) -> MultivariateNormalNetwork:
+    #     return MultivariateNormalNetwork(
+    #         node_GPs=self.node_GPs,
+    #         dag=self.dag,
+    #         X=X,
+    #         indices_X=self.active_input_indices,
+    #     )
+
     def condition_on_observations(
         self,
         X: List[Tensor],
@@ -168,6 +184,7 @@ class GaussianProcessNetwork(Model):
             Yvar: A length-`n_nodes` list of tensors containing variance of new outputs
                 corresponding to new designs at each node to be conditioned on
             Note that: evaluation_mask can be extracted by locating all indices with None values.
+            TODO: deal with kwargs
 
         Returns:
             An updated network `Model` object of the same type, representing the original model
@@ -183,7 +200,7 @@ class GaussianProcessNetwork(Model):
                 Yvar_node_k = (
                     Yvar[k]
                     if Yvar is not None
-                    else torch.ones(Y[k].shape[1:]).to(Y[k]) * 1e-6
+                    else torch.ones(Y[k].shape[1:]).to(Y[k]) * 1e-6  
                 )
                 fantasy_model = self.node_GPs[k].condition_on_observations(
                     X=self.node_GPs[k].transform_inputs(X[k]),
@@ -203,6 +220,9 @@ class GaussianProcessNetwork(Model):
             active_input_indices=self.active_input_indices,
             node_GPs=fantasy_models,
         )
+        # note that we do not update the train_X and train_Y here,
+        # since we do not need to access them in the fantasy model.
+        # TODO: clean up `train_X` and `train_Y` in the GaussianProcessNetwork model.
 
     def fantasize(
         self,
@@ -222,6 +242,7 @@ class GaussianProcessNetwork(Model):
             samplers: A list of MC samplers of legnth `node_update`.
             evaluation_mask: A binary list of length `n_node` where 1 means that a node is selected
                 to be fantasized.
+            TODO: deal with kwargs in the fantasize() function.
 
         Returns:
             An updated GP network.
@@ -245,6 +266,7 @@ class GaussianProcessNetwork(Model):
             Y_for_condition[k] = Y_node_k
             list_idx = list_idx + 1
 
+        # update at once using the `condition_on_observation` function
         fantasy_models = self.condition_on_observations(
             X=X_for_condition, Y=Y_for_condition
         )
@@ -304,17 +326,22 @@ class MultivariateNormalNetwork(TorchPosterior):
     @property
     def batch_shape(self) -> torch.Size:
         """compute the batch shape of the GaussianProcessNetwork posterior."""
+        # gp_batch_shapes = [gp.batch_shape for gp in self.node_GPs]
+        # idx = torch.argmax(torch.Tensor([len(shape) for shape in gp_batch_shapes]))
+        # gp_batch_shape = gp_batch_shapes[idx]
         gp_batch_shape = torch.broadcast_shapes(
             *[gp.batch_shape for gp in self.node_GPs]
         )
         X_batch_shape = self.X.shape[:-2]
         return torch.broadcast_shapes(gp_batch_shape, X_batch_shape)
 
+    # base_sample_shape now returns torch.Size([n_f, q, n_nodes])
     @property
     def base_sample_shape(self) -> torch.Size:
         """Compute the base sample shape of the GaussianProcessNetwork posterior."""
         return self.event_shape
 
+    # _extended_shape return torch.Size([n_SAA, n_f, q, n_nodes])
     @property
     def _extended_shape(self, sample_shape: torch.Size) -> torch.Size:
         return sample_shape + self.base_sample_shape
@@ -351,23 +378,35 @@ class MultivariateNormalNetwork(TorchPosterior):
         """
         nodes_samples = torch.empty(
             base_samples.shape
-        ) 
+        )  # sample_shape x batch_shape x q x m
         nodes_samples = nodes_samples.to(self.device).to(self.dtype)
         nodes_samples_available = [False for k in range(self.n_nodes)]
         batch_shape = base_samples.shape[len(sample_shape) : -2]
 
+        # We make a replication of self.X so that it has dimension torch.Size([b_2 x b_1, q, d])
+        # If the GP network model does not have batch shape, skip this step
         if len(batch_shape) > 0:
             self.X = torch.broadcast_to(self.X, batch_shape + self.X.shape[-2:])
+            # self.X = self.X[(None,) * len(batch_shape)]
+            # self.X = self.X.repeat(*list(batch_shape), 1, 1)
 
         for k in self.root_nodes:
             if self.active_input_indices is not None:
                 X_node_k = self.X[..., self.active_input_indices[k]]
             else:
-                X_node_k = self.X 
+                X_node_k = self.X  # batch_shape x q x d
             multivariate_normal_at_node_k = self.node_GPs[k].posterior(X_node_k)
+            # two cases:
+            # case 1: node_GP has no fantasy dimension (i.e., input is q x d), then X_node_k is shape nf x q x d, posterior is nf x q x 1
+            # case 2: node_GP has fantasy dimension (i.e., input is n_f x q x d), then X_node_k is shape nf x q x d, posterior is nf x q x 1
             nodes_samples[..., k] = multivariate_normal_at_node_k.rsample(
-                sample_shape, base_samples[..., [k]]  
+                sample_shape, base_samples[..., [k]]  # sample_shape x n_f x q x 1
             )[..., 0]
+            # base_sample: sample_shape x batch_shape x q x m
+            # left: sample_shape x batch_shape x q
+            # right: sample_shape x batch_shape x q
+
+            # nodes_samples[...,k] has dimension torch.Size([n_SAA, n_f, q])
             nodes_samples_available[k] = True
 
         while not all(nodes_samples_available):
@@ -378,24 +417,36 @@ class MultivariateNormalNetwork(TorchPosterior):
                 ):
                     parent_nodes_samples = nodes_samples[
                         ..., parent_nodes
-                    ]  
+                    ]  # n_SAA x nf x q x n_parents
                     X_node_k = self.X[
                         ..., self.active_input_indices[k]
-                    ] 
+                    ]  # n_f x q x d_k_active
                     aux_shape = [sample_shape[0]] + [
                         1
-                    ] * X_node_k.ndim  
+                    ] * X_node_k.ndim  # n_SAA x 1 x 1 x 1
                     X_node_k = X_node_k.unsqueeze(0).repeat(
                         *aux_shape
-                    ) 
+                    )  # n_SAA x n_f x q x d_k_active
                     X_node_k = torch.cat(
                         [X_node_k, parent_nodes_samples], -1
-                    ) 
+                    )  # n_SAA x n_f x q x d_aug where d_aug = d_k_active + n_parents_node_k
                     multivariate_normal_at_node_k = self.node_GPs[k].posterior(X_node_k)
+                    # two cases:
+                    # case 1: node_GP has no fantasy dimension (i.e., input is q x d_aug), then X_node_k is shape n_SAA x nf x q x d_aug, posterior is n_SAA x nf x q x 1
+                    # case 2: node_GP has fantasy dimension (i.e., input is n_f x q x d_aug), then X_node_k is shape n_SAA x nf x q x d_aug, posterior is n_SAA x nf x q x 1
+                    # if base_samples is not None:
                     nodes_samples[..., k] = multivariate_normal_at_node_k.rsample(
                         sample_shape=torch.Size([1]),
                         base_samples=base_samples[..., [k]].unsqueeze(dim=0),
+                        # base_samples=base_samples[..., [k]],
                     )[0, ..., 0]
+                    # print(nodes_samples_k)
+                    # note: base_samples: currently n_SAA x n_f x q x 1 but we want 1 x n_SAA x n_f x q x 1
+                    # result: 1 x n_SAA x nf x q x 1 -> n_SAA x nf x q
+                    # else:
+                    #     nodes_samples[..., k] = multivariate_normal_at_node_k.rsample(
+                    #         sample_shape=torch.Size([1])
+                    #     )[0, ..., 0]
                     nodes_samples_available[k] = True
         return nodes_samples
 
@@ -434,22 +485,21 @@ def initialize_GP(
         train_X: A `batch_shape x n x d` tensor of training inputs.
         train_Y: A `batch_shape x n x m` tensor of training targets.
         train_Yvar: Optional `batch_shape x n x m` tensor of training noise variances.
-        modified_prior: A boolean indicating whether to use the default prior for GP parameters
-        noisy: A boolean indicating if the observations are noisy. If true, a SingleTaskGP is used. Otherwise, FixednoiseGP model is used.
 
     Returns:
         A GP model
     """
     dim, batch_shape = train_X.shape[-1], train_X.shape[:-2]
+    output_dim = train_Y.shape[-1]
 
     if train_Yvar is None:
-        train_Yvar = torch.ones_like(train_Y) * 1e-6
+        train_Yvar = torch.ones_like(train_Y) * 1e-6  
     if not noisy:
         model = FixedNoiseGP(
             train_X=train_X,
             train_Y=train_Y,
             train_Yvar=train_Yvar,
-            outcome_transform=Standardize(m=1, batch_shape=batch_shape),
+            outcome_transform=Standardize(m=output_dim, batch_shape=batch_shape),
             input_transform=Normalize(d=dim),
         )
         if modified_prior:
@@ -464,7 +514,7 @@ def initialize_GP(
         model = SingleTaskGP(
             train_X=train_X,
             train_Y=train_Y,
-            outcome_transform=Standardize(m=1, batch_shape=batch_shape),
+            outcome_transform=Standardize(m=output_dim, batch_shape=batch_shape),
             input_transform=Normalize(d=dim),
         )
         if modified_prior:
