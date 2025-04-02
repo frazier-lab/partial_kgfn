@@ -7,9 +7,10 @@ from botorch.acquisition.objective import (
     PosteriorTransform,
 )
 from botorch.settings import debug
-from decoupled_kg.models.dag import DAG
-from decoupled_kg.run_one_trial import parse, run_one_trial
-from decoupled_kg.test_functions.GPs2 import GPs2
+
+from partial_kgfn.models.dag import DAG
+from partial_kgfn.run_one_trial import parse, run_one_trial
+from partial_kgfn.test_functions.GPs2 import GPs2
 
 warnings.filterwarnings("ignore")
 torch.set_default_dtype(torch.float64)
