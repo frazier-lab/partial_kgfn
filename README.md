@@ -16,7 +16,11 @@ This repository contains partial_kgfn and results folders.
     - partial_kgfn.py -- an MCAcquisitionFunction class used to compute the knowledge gradient for function network acquisition function with partial evaluations
     - tsfn.py -- an AcquisitionFunction class used to compute the Thompson Sampling acquisition function
 2. experiments -- runner files for the two test case problems
+    - ackleyS_runner.py -- a main file to run Ackley problem
     - ackmat_runner.py -- a main file to run AckMat problem
+    - freesolv3_runner.py -- a main file to run FreeSolv3 problem
+    - GPs1_runner.py -- a main file to run GP test problem #1
+    - GPs2_runner.py -- a main file to run GP test problem #2
     - manufacturing_runner.py -- a main file to run Manu problem
 3. model -- gaussian process model for function network
     - dag.py -- a DAG object
@@ -24,8 +28,14 @@ This repository contains partial_kgfn and results folders.
 4. optim -- codes to support acquisition function optimization
     - discrete_kgfn_optim.py -- a file containing optimization function used to solve partial_kgfn acquisition function
 5. test_functions -- test problems
-    - act_mat.py -- a SyntheticTestFunction class for AckMat problem
+    - ack_mat.py -- a SyntheticTestFunction class for AckMat problem
+    - ackley_sin.py -- a SyntheticTestFunction class for Ackley problem
+    - freesolv3.py -- a SyntheticTestFunction class for FreeSolv3 problem
+    - GPs1.py -- a SyntheticTestFunction class for GP test problem #1
+    - GPs2.py -- a SyntheticTestFunction class for GP test problem #2
     - manufacter_gp.py -- a SyntheticTestFunction class for manufacturing problem
+    - pharmaceutical.py -- a SyntheticTestFunction class for pharma problem
+    - freesolv_NN_rep3dim.csv -- a data file to construct a FreeSolv problem
 6. utils -- utilities functions
     - construct_obs_set.py -- code for constructing observation set according to the DAG of the problem
     - EIFN_optimize_acqf.py -- code for optimizing EIFN acquisition function 
@@ -47,8 +57,6 @@ run_experiment.ipynb is a notebook used to run a problem.
     - budget -- BO evaluation budget (int)
     - impose_assump -- a boolean variable indicating if the upstream-downstream restriction is imposed. If "True", to evaluate downstream nodes, its parent nodes' outputs have to be obtained beforehand. 
 **To use fast_pKGFN, impose_condition is needed to set to False.**
-
-Similarly, the third and fourth cells are for Manu problem and the fifth and the sixth cells are for FreeSolv problem. One can use the same format when calling the runner.
 
 ## Software requirements
 The entire codebase is written in python. Package requirements are as follows:
