@@ -7,7 +7,6 @@ r"""
 The FreeSolv function network test problem.
 """
 
-
 import os
 from typing import List, Optional, Union
 
@@ -22,13 +21,22 @@ from botorch.test_functions.synthetic import SyntheticTestFunction
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor
 
-from partial_kgfn.models.dag import DAG
+from fast_pkgfn.models.dag import DAG
+from fast_pkgfn.models.decoupled_gp_network import (
+    GaussianProcessNetwork,
+    fit_gp_network,
+    initialize_GP,
+)
 
 
 class Freesolv3FunctionNetwork(SyntheticTestFunction):
     """Function network test problem based on the FreeSolv function."""
-    current_directory = os.getcwd()
+
     impose_assumption = True
+    subtree = [[[0], [1]], [[1]]]
+    node_fixed_attribute = {"[[0], [1]]": [], "[[1]]": [[0]]}  # List[List[int]]
+    num_fantasies = {"[[0], [1]]": [8, 1], "[[1]]": [8]}  # List[int]
+    subtree_node_costs = {"[[0], [1]]": [0, 1], "[[1]]": [1]}  # List[int]
     parent_nodes = [[], [0]]
     dag = DAG(parent_nodes=parent_nodes)
     active_input_indices = [[i for i in range(3)], []]
@@ -36,9 +44,11 @@ class Freesolv3FunctionNetwork(SyntheticTestFunction):
     dim = 3
     node_dims = [3, 1]
     node_groups = [[0], [1]]
-    data = pd.read_csv(
-        f"{current_directory}/partial_kgfn/test_functions/freesolv_NN_rep3dim.csv"
-    )
+
+    # Specify the main and alternative directories
+    loading_directory = "./fast_pkgfn/test_functions/supporting_data/"
+
+    data = pd.read_csv(f"{loading_directory}freesolv_NN_rep3dim.csv")
     data_tensor = torch.tensor(data.values)
     train_X = [data_tensor[..., :3], data_tensor[..., [3]]]
     train_Y = [data_tensor[..., [3]], data_tensor[..., [4]]]
@@ -81,6 +91,10 @@ class Freesolv3FunctionNetwork(SyntheticTestFunction):
         """
         self.parent_bounds = None
         self.node_costs = node_costs
+        self.parent_bounds = [
+            None,
+            torch.Tensor([[-5], [30]]),
+        ]
 
     def evaluate_true(self, X: Tensor) -> None:
         return None
