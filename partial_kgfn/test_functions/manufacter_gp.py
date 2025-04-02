@@ -4,28 +4,27 @@
 # LICENSE file in the root directory of this source tree.
 
 r"""
-The manufacturing function network test problem.
+The Manufacturing function network test problem.
 """
 
+from typing import Callable, List, Optional, Union
 
-from typing import List, Optional, Union
-
+import numpy as np
 import torch
 from botorch.models import SingleTaskGP
 from botorch.test_functions.synthetic import SyntheticTestFunction
 from botorch.utils.gp_sampling import get_gp_samples
 from torch import Tensor
 
-from partial_kgfn.models.dag import DAG
+from fast_pkgfn.models.dag import DAG
 
 
 class ManufacturingGPNetwork(SyntheticTestFunction):
     n_nodes = 4
-    impose_assumption = True
     node_groups = [[0], [1], [2], [3]]
     parent_nodes = [[], [0], [], [1, 2]]
     dag = DAG(parent_nodes=parent_nodes)
-
+    _optimal_value = -0.9844497165719973  # max
     X0 = torch.empty(0, 2).to(torch.double)
     Y0 = torch.empty(0, 1).to(torch.double)
     model0 = SingleTaskGP(train_X=X0, train_Y=Y0)
@@ -71,6 +70,16 @@ class ManufacturingGPNetwork(SyntheticTestFunction):
         self.dim = 4
         self.node_dims = [2, 1, 2, 2]
         self._bounds = [(-1.0, 1.0) for _ in range(4)]
+        self.parent_bounds = [
+            None,
+            torch.Tensor([[-2], [2]]),
+            None,
+            torch.Tensor([[-1, -1], [1, 1]]),
+        ]
+        # self._optimizers = [
+        #     tuple((-0.48296594619750977, -0.9118236303329468, 1.0, 0.3587174415588379))
+        # ]
+        self.optimizers = tuple((0.4509, 0.4549, -1.0000, -0.6754))
         self.active_input_indices = [[0, 1], [], [2, 3], []]
         self.node_costs = node_costs
         super().__init__(**kwargs)
@@ -143,7 +152,7 @@ class ManufacturingGPNetwork(SyntheticTestFunction):
             return self.function3(X)
 
         if idx is None:
-            output = torch.empty(input_shape[:-1] + torch.Size([self.n_nodes])).to(X)
+            output = torch.empty(input_shape[:-1] + torch.Size([self.n_nodes])).to(torch.double)
             output[..., [0]] = f_0(X[..., [0, 1]])
             output[..., [1]] = f_1(output[..., [0]])
             output[..., [2]] = f_2(X[..., [2, 3]])
