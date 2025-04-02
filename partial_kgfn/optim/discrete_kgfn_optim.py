@@ -17,7 +17,7 @@ from botorch.logging import logger
 from torch import Tensor
 
 from botorch.acquisition.fixed_feature import FixedFeatureAcquisitionFunction
-from fast_pkgfn.models.decoupled_gp_network import GaussianProcessNetwork
+from partial_pkgfn.models.decoupled_gp_network import GaussianProcessNetwork
 from botorch.optim.optimize import optimize_acqf
 
 
