@@ -1,16 +1,15 @@
 ### Bayesian Optimization of Function Networks with Partial Evaluations
-This is the code repository for the implementations of Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
+This repository contains the code implementations for Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
 
-Full details of pKGFN algorithm can be found in the paper titled "Bayesian Optimization of Function Networks with Partial Evaluations", accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html), and of its accerated version in the paper titled "Fast Bayesian Optimization of Function Networks with Partial Evaluations" available at [ArXiv]
-
+The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html). The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv].
 
 ## Brief overview
 Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) is an algorithm variant of Bayesian Optimization (BO) which uses to solve optimization problems whose objective function is expensive-to-evaluate and can be constructed as a directed acyclic graph such that each function node can be quired independently with varying evaluation costs. Methods in this repository, moreover, consider the aformentioned settings with an additional property that evaluating downstream nodes does not require physically obtaining outputs from upsteam nodes, but known ranges for each node output have to be provided. Our proposed method, 'fast_pkgfn' is a faster variant of pKGFN algorithm applicable to solve problems with these settings.
 
 ## Contents
-This repository contains fast_pkgfn and results folders.
+This repository contains partial_kgfn and results folders.
 
-- fast_pkgfn consists of the following folders and files:
+- partial_kgfn consists of the following folders and files:
 1. acquisition -- acquisition function files
     - FN_realization.py -- an AcquisitionFunction class used to sample a network realization from a function network model
     - full_kgfn.py -- an MCAcquisitionFunction class used to compute the knowledge gradient for function network acquisition function with full evaluations
