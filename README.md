@@ -48,9 +48,9 @@ This repository contains partial_kgfn and results folders.
 ## Example code
 run_experiment.ipynb is a notebook used to run a problem. 
 
-- First cell: Call the Ackmat problem
+- First cell: Call a problem
 
-- Second cell: Call the AckMat problem runner where users need to specify the followings:
+- Second cell: Call the loaded problem runner where users need to specify the followings:
     - trial -- trial number (int)
     - algo -- algorithm name (str): options are "EI", "KG", "Random", "EIFN", "KGFN", "TSFN", "pKGFN", "fast_pKGFN" (Our method)
     - cost -- evaluation cost configuration (str): This should be in the format of "node1cost_node2cost_node3cost_..._nodeKcost"
