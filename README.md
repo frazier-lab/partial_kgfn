@@ -69,8 +69,8 @@ The entire codebase is written in python. Package requirements are as follows:
   - matplotlib
   - jupyter
 
-The corresponding environment may be created via conda and the provided fast_pKGFN_evn.yml file as follows:
+The corresponding environment may be created via conda and the provided pKGFN_evn.yml file as follows:
 ```
-  conda env create -f fast_pKGFN_evn.yml
-  conda activate fast_pKGFN_evn
+  conda env create -f pKGFN_evn.yml
+  conda activate pKGFN_evn
 ```
