@@ -32,17 +32,17 @@ from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor, normal
 from torch.distributions.multivariate_normal import MultivariateNormal
 
-from fast_pkgfn.acquisition.full_kgfn import FullKnowledgeGradientFN
-from fast_pkgfn.acquisition.partial_kgfn import PartialKnowledgeGradientFN
-from fast_pkgfn.acquisition.FN_realization import FN_realization
-from fast_pkgfn.acquisition.tsfn import ThompsonSamplingFN
-from fast_pkgfn.models.decoupled_gp_network import (
+from partial_pkgfn.acquisition.full_kgfn import FullKnowledgeGradientFN
+from partial_pkgfn.acquisition.partial_kgfn import PartialKnowledgeGradientFN
+from partial_pkgfn.acquisition.FN_realization import FN_realization
+from partial_pkgfn.acquisition.tsfn import ThompsonSamplingFN
+from partial_pkgfn.models.decoupled_gp_network import (
     GaussianProcessNetwork,
     fit_gp_network,
     initialize_GP,
 )
-from fast_pkgfn.optim.discrete_kgfn_optim import optimize_discrete_acqf_for_function_network
-from fast_pkgfn.optim.discrete_kgfn_optim import (
+from partial_pkgfn.optim.discrete_kgfn_optim import optimize_discrete_acqf_for_function_network
+from partial_pkgfn.optim.discrete_kgfn_optim import (
     optimize_discrete_acqf_for_function_network,
 )
 from botorch.optim.optimize import optimize_acqf
@@ -51,10 +51,10 @@ from fast_kgfn.test_functions.ackley_sin import AckleyFunctionNetwork
 from fast_kgfn.test_functions.freesolv3 import Freesolv3FunctionNetwork
 from fast_kgfn.test_functions.manufacter_gp import ManufacturingGPNetwork
 from fast_kgfn.test_functions.pharmaceutical import PharmaFunctionNetwork
-from fast_pkgfn.utils.construct_obs_set import construct_obs_set
-from fast_pkgfn.utils.EIFN_optimize_acqf import optimize_acqf_and_get_suggested_point
-from fast_pkgfn.utils.gen_batch_x_fantasies import GenbatchXFantasiesFN
-from fast_pkgfn.utils.posterior_mean import PosteriorMean
+from partial_pkgfn.utils.construct_obs_set import construct_obs_set
+from partial_pkgfn.utils.EIFN_optimize_acqf import optimize_acqf_and_get_suggested_point
+from partial_pkgfn.utils.gen_batch_x_fantasies import GenbatchXFantasiesFN
+from partial_pkgfn.utils.posterior_mean import PosteriorMean
 
 tkwargs = {
     "dtype": torch.double,
