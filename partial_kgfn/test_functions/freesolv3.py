@@ -21,8 +21,8 @@ from botorch.test_functions.synthetic import SyntheticTestFunction
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from torch import Tensor
 
-from fast_pkgfn.models.dag import DAG
-from fast_pkgfn.models.decoupled_gp_network import (
+from partial_pkgfn.models.dag import DAG
+from partial_pkgfn.models.decoupled_gp_network import (
     GaussianProcessNetwork,
     fit_gp_network,
     initialize_GP,
