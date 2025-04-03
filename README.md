@@ -1,10 +1,34 @@
 ### Bayesian Optimization of Function Networks with Partial Evaluations
 This repository contains the code implementations for Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
 
-The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html). The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv].
+The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024 [1]](https://proceedings.mlr.press/v235/buathong24a.html). The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv [2]].
 
 ## Brief overview
-Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) is an algorithm variant of Bayesian Optimization (BO) which uses to solve optimization problems whose objective function is expensive-to-evaluate and can be constructed as a directed acyclic graph such that each function node can be quired independently with varying evaluation costs. Methods in this repository, moreover, consider the aformentioned settings with an additional property that evaluating downstream nodes does not require physically obtaining outputs from upsteam nodes, but known ranges for each node output have to be provided. Our proposed method, 'fast_pkgfn' is a faster variant of pKGFN algorithm applicable to solve problems with these settings.
+Bayesian Optimization (BO) [[3](https://link.springer.com/article/10.1023/A:1008306431147),[4](https://pubsonline.informs.org/doi/abs/10.1287/educ.2018.0188)] is an optimization framework used to solve problems of the form
+<div align="center">
+  <img src="https://quicklatex.com/cache3/5f/ql_6630febdcfab3a3d38a5b1c83e3ec75f_l3.png" alt="Equation" />
+</div>
+
+where $$f(x)$$ is an expensive-to-evaluate black-box function.
+
+BO framework consists of two main components
+- Surrogate model: used for approximating the objective function $$f(x)$$ and
+- Acquisition function: constucted upon the fitted surrogate model and used for evaluating benefits of performing an additional evaluation at any input $$x\in\mathcal{X}$$.
+
+BO begins with an initial set of $n$ observations $D\_n=\{(x\_i,f(x\_i))\}\_{i=1}^n$. Then it fits a surrogate model using this dataset. Next, it constructs an acquisition function based on the fitted model and optimizes it to get the most promising candidate input $$\hat{x}$$. Subsequently, it evaluates at the suggested input and obtains the function value $$f(\hat{x})$$. The newly obtained data point $$(\hat{x},f(\hat{x}))$$ is then appended to the observation set. This process repeats until budget depletion.
+
+Bayesian Optimization of Function Networks (BOFN) [[5]](https://proceedings.neurips.cc/paper/2021/hash/792c7b5aae4a79e78aaeda80516ae2ac-Abstract.html) is an advanced BO framework designed to solve optimization problems whose objective functions can be constructed as a network of functions such that outputs of some nodes serve as parts of inputs for another.
+
+<img src="figure/function_network_example.png" alt="An example of function networks" width="500">
+Figure 1: An example of function networks
+
+For example, Figure 1 shows a function network arranged as a directed acyclic graph (DAG), consisting of three function nodes $$f\_1,f\_2$$ and $$f\_3$$. It takes a vector $$x$$ of three variables $$x\_1,x\_2$$ and $$x\_3$$ as a function network input. Evaluating $$f\_1$$ at $$x\_1$$ yields an intermediate output $$y\_1$$. Similarly, evaluating $$f\_2$$ at $$x\_2$$ gives an intermediate output $$y\_2$$. To evaluate $$f\_3$$, it takes the two intermediate outputs $$y\_1$$ and $$y\_2$$ together with an additional parameter $$x\_3$$ and returns the final output $$y\_3$$. For this problem, one aims to find an optimization solution $$x\^*$$ that yields highest value of final output $$y\_3$$. Evaluating the network at any network input $$x$$ gives not only the final output $$y\_3$$, but also the two intermediate outputs $$y\_1$$ and $$y\_2$$.
+
+In [[5]](https://proceedings.neurips.cc/paper/2021/hash/792c7b5aae4a79e78aaeda80516ae2ac-Abstract.html), the surrogate model for a function network and a novel acquisition function named the *Expected Improvement of Function Networks* (EIFN) which leverages these intermediate outputs and it has shown significant optimization performance improvement.
+
+Recently, [1]  has extended the BOFN framework to function networks where nodes can be queried independently and they incur differnt positive evaluation costs. Using Figure 1 as example, in this setting, one can decide to evaluate $$f\_1$$ at $$x\_1$$ with paying the cost $$c\_1(x\_1)$$. Once the observation $$y\_1$$ is observed, one can decide based on the $$y\_1$$ value to either (1) continue evaluating $$f\_3$$ at this $$y\_1$$ together with some $$y\_2$$ obtained from evaluating $$f\_2$$ at some $$x\_2$$ and some additional $$x\_3$$ if it looks promising or (2) restart the process, evaluating $$f\_1$$ at some other inputs. In order to make a decision, [1] used the same surrogate model as considered in [5] and proposed an acquisition function named the *Knowledge Gradient of Function Networks with Partial Evaluations* (pKGFN) which decides a node and its corresponding input to evaluate in each iteration in a cost-aware manner. This acquisition function does not have an analytical formula, requiring its computations to rely on costly Monte-Carlo approximation. Moreover the acquisition function is specific to each node and in order to make a decision on which node to evaluate, one has to loop through all nodes and solves acquisition function problems separately. This further compounds the computational challenges of pKGFN.
+
+To address these computational challenges, [2] recently proposed a faster-to-evaluate variant of pKGFN (Fast pKGFN) which requires solving only one acquisition function problem at each iteration. It leverages the use of EIFN [5] together with simulated intermediate outcomes from the fitted surrogate model to form a propose-to-evaluate candidate input for each individual node. These candidates are compared by using pKGFN acquisition function [1] in a cost-aware manner and there is only one node and its corresponding input are selected to evaluate in each iteration. Fast pKGFN has proven to have a competitive optimization performance to the original pKGFN, but significantly reduce the runtime by up to $$16\times$$ according to numerical experiments tested and reported in the paper.
 
 ## Contents
 This repository contains partial_kgfn and results folders.
@@ -74,3 +98,14 @@ The corresponding environment may be created via conda and the provided pKGFN_ev
   conda env create -f pKGFN_evn.yml
   conda activate pKGFN_evn
 ```
+
+## References
+[1] Buathong, Poompol, et al. "Bayesian Optimization of Function Networks with Partial Evaluations." International Conference on Machine Learning. PMLR, 2024.
+
+[2] Buathong, Poompol and Frazier, Peter I. "Fast Bayesian Optimization of Function Networks with Partial Evaluations." ArXiv
+
+[3] Jones, Donald R., Matthias Schonlau, and William J. Welch. "Efficient global optimization of expensive black-box functions." Journal of Global optimization 13 (1998): 455-492.
+
+[4] Frazier, Peter I. "Bayesian optimization." Recent advances in optimization and modeling of contemporary problems. Informs, 2018. 255-278.
+
+[5] Astudillo, Raul, and Frazier, Peter I. "Bayesian optimization of function networks." Advances in neural information processing systems 34 (2021): 14463-14475.
