@@ -79,6 +79,7 @@ run_experiment.ipynb is a notebook used to run a problem.
     - algo -- algorithm name (str): options are "EI", "KG", "Random", "EIFN", "KGFN", "TSFN", "pKGFN", "fast_pKGFN" (Our method)
     - cost -- evaluation cost configuration (str): This should be in the format of "node1cost_node2cost_node3cost_..._nodeKcost"
     - budget -- BO evaluation budget (int)
+    - noisy -- a boolean variable indicating if the observations are noisy.
     - impose_assump -- a boolean variable indicating if the upstream-downstream restriction is imposed. If "True", to evaluate downstream nodes, its parent nodes' outputs have to be obtained beforehand. 
 **To use fast_pKGFN, impose_condition is needed to set to False.**
 
