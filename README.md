@@ -82,7 +82,7 @@ run_experiment.ipynb is a notebook used to run a problem.
     - impose_assump -- a boolean variable indicating if the upstream-downstream restriction is imposed. If "True", to evaluate downstream nodes, its parent nodes' outputs have to be obtained beforehand. 
 **To use fast_pKGFN, impose_condition is needed to set to False.**
 
-** Note fast_pKGFN can be used to solve all problems, but pharma due to its incompatible structure, making fast_pKGFN boil down to a standard EIFN**
+**Note: fast_pKGFN can be used to solve all problems, but pharma due to its incompatible structure, making fast_pKGFN boil down to a standard EIFN**
 ## Software requirements
 The entire codebase is written in python. Package requirements are as follows:
   - python=3.9
