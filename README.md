@@ -1,10 +1,10 @@
 ### Bayesian Optimization of Function Networks with Partial Evaluations
 This repository contains the code implementations for Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
 
-The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024 [1]](https://proceedings.mlr.press/v235/buathong24a.html). The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv [2]].
+The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html)[1]. The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv](..)[2].
 
 ## Brief overview
-Bayesian Optimization (BO) [[3](https://link.springer.com/article/10.1023/A:1008306431147),[4](https://pubsonline.informs.org/doi/abs/10.1287/educ.2018.0188)] is an optimization framework used to solve problems of the form
+Bayesian Optimization (BO) [3,4] is an optimization framework used to solve problems of the form
 <div align="center">
   <img src="https://quicklatex.com/cache3/5f/ql_6630febdcfab3a3d38a5b1c83e3ec75f_l3.png" alt="Equation" />
 </div>
@@ -17,14 +17,14 @@ BO framework consists of two main components
 
 BO begins with an initial set of $n$ observations $D\_n=\{(x\_i,f(x\_i))\}\_{i=1}^n$. Then it fits a surrogate model using this dataset. Next, it constructs an acquisition function based on the fitted model and optimizes it to get the most promising candidate input $$\hat{x}$$. Subsequently, it evaluates at the suggested input and obtains the function value $$f(\hat{x})$$. The newly obtained data point $$(\hat{x},f(\hat{x}))$$ is then appended to the observation set. This process repeats until budget depletion.
 
-Bayesian Optimization of Function Networks (BOFN) [[5]](https://proceedings.neurips.cc/paper/2021/hash/792c7b5aae4a79e78aaeda80516ae2ac-Abstract.html) is an advanced BO framework designed to solve optimization problems whose objective functions can be constructed as a network of functions such that outputs of some nodes serve as parts of inputs for another.
+Bayesian Optimization of Function Networks (BOFN) [5] is an advanced BO framework designed to solve optimization problems whose objective functions can be constructed as a network of functions such that outputs of some nodes serve as parts of inputs for another.
 
 <img src="figure/function_network_example.png" alt="An example of function networks" width="500">
 Figure 1: An example of function networks
 
 For example, Figure 1 shows a function network arranged as a directed acyclic graph (DAG), consisting of three function nodes $$f\_1,f\_2$$ and $$f\_3$$. It takes a vector $$x$$ of three variables $$x\_1,x\_2$$ and $$x\_3$$ as a function network input. Evaluating $$f\_1$$ at $$x\_1$$ yields an intermediate output $$y\_1$$. Similarly, evaluating $$f\_2$$ at $$x\_2$$ gives an intermediate output $$y\_2$$. To evaluate $$f\_3$$, it takes the two intermediate outputs $$y\_1$$ and $$y\_2$$ together with an additional parameter $$x\_3$$ and returns the final output $$y\_3$$. For this problem, one aims to find an optimization solution $$x\^*$$ that yields highest value of final output $$y\_3$$. Evaluating the network at any network input $$x$$ gives not only the final output $$y\_3$$, but also the two intermediate outputs $$y\_1$$ and $$y\_2$$.
 
-In [[5]](https://proceedings.neurips.cc/paper/2021/hash/792c7b5aae4a79e78aaeda80516ae2ac-Abstract.html), the surrogate model for a function network and a novel acquisition function named the *Expected Improvement of Function Networks* (EIFN) which leverages these intermediate outputs and it has shown significant optimization performance improvement.
+In [5], the surrogate model for a function network and a novel acquisition function named the *Expected Improvement of Function Networks* (EIFN) which leverages these intermediate outputs and it has shown significant optimization performance improvement.
 
 Recently, [1]  has extended the BOFN framework to function networks where nodes can be queried independently and they incur differnt positive evaluation costs. Using Figure 1 as example, in this setting, one can decide to evaluate $$f\_1$$ at $$x\_1$$ with paying the cost $$c\_1(x\_1)$$. Once the observation $$y\_1$$ is observed, one can decide based on the $$y\_1$$ value to either (1) continue evaluating $$f\_3$$ at this $$y\_1$$ together with some $$y\_2$$ obtained from evaluating $$f\_2$$ at some $$x\_2$$ and some additional $$x\_3$$ if it looks promising or (2) restart the process, evaluating $$f\_1$$ at some other inputs. In order to make a decision, [1] used the same surrogate model as considered in [5] and proposed an acquisition function named the *Knowledge Gradient of Function Networks with Partial Evaluations* (pKGFN) which decides a node and its corresponding input to evaluate in each iteration in a cost-aware manner. This acquisition function does not have an analytical formula, requiring its computations to rely on costly Monte-Carlo approximation. Moreover the acquisition function is specific to each node and in order to make a decision on which node to evaluate, one has to loop through all nodes and solves acquisition function problems separately. This further compounds the computational challenges of pKGFN.
 
