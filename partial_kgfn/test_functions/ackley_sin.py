@@ -48,6 +48,7 @@ class AckleyFunctionNetwork(Ackley):
                 [2.00, 2.00, 2.00, 2.00, 2.00, 2.00],
             ]
         )
+        self.parent_bounds = [None, torch.Tensor([[0], [20]])]
         self.ackley = Ackley(dim=6)
 
     def evaluate_true(self, X: Tensor) -> None:
