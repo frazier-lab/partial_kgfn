@@ -47,6 +47,10 @@ class GPs1(SyntheticTestFunction):
         self.dim = 1
         self.node_dims = [1, 1]
         self._bounds = [(-1.0, 1.0) for _ in range(1)]
+        self.parent_bounds = [
+            None,
+            torch.Tensor([[-1], [2]]),
+        ]
         self.optimizers = 0.459
         self.active_input_indices = [[0], []]
         self.node_costs = node_costs
