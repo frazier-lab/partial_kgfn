@@ -34,7 +34,7 @@ BO begins with an initial set of $n$ observations $D\_n=\{(x\_i,f(x\_i))\}\_{i=1
 
 Bayesian Optimization of Function Networks (BOFN) [5] is an advanced BO framework designed to solve optimization problems whose objective functions can be constructed as a network of functions such that outputs of some nodes serve as parts of inputs for another.
 <div align="center">
-  <img src="figure/function_network_example.png" alt="An example of function networks" width="500" alt="Equation">
+  <img src="figure/function_network_example.png" alt="An example of function networks" width="400" alt="Equation">
 
   Figure 1: An example of function networks
 </div>
