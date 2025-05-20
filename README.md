@@ -2,7 +2,22 @@
 This repository contains the code implementations for Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
 
 The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html)[1]. The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv](..)[2].
+## Software requirements
+The entire codebase is written in python. Package requirements are as follows:
+  - python=3.9
+  - botorch==0.8.4
+  - numpy==1.23.5
+  - gpytorch==1.10
+  - scipy==1.10.1
+  - pandas
+  - matplotlib
+  - jupyter
 
+The corresponding environment may be created via conda and the provided pKGFN_evn.yml file as follows:
+```
+  conda env create -f pKGFN_env.yml
+  conda activate pKGFN_env
+```
 ## Brief overview
 Bayesian Optimization (BO) [3,4] is an optimization framework used to solve problems of the form
 <div align="center">
@@ -87,22 +102,7 @@ run_experiment.ipynb is a notebook used to run a problem.
 **To use fast_pKGFN, impose_condition is needed to set to False.**
 
 **Note: fast_pKGFN can be used to solve all problems, but pharma due to its incompatible structure, making fast_pKGFN boil down to a standard EIFN in this specific problem**
-## Software requirements
-The entire codebase is written in python. Package requirements are as follows:
-  - python=3.9
-  - botorch==0.8.4
-  - numpy==1.23.5
-  - gpytorch==1.10
-  - scipy==1.10.1
-  - pandas
-  - matplotlib
-  - jupyter
 
-The corresponding environment may be created via conda and the provided pKGFN_evn.yml file as follows:
-```
-  conda env create -f pKGFN_evn.yml
-  conda activate pKGFN_evn
-```
 
 ## References
 [1] Buathong, Poompol, et al. "Bayesian Optimization of Function Networks with Partial Evaluations." International Conference on Machine Learning. PMLR, 2024.
