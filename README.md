@@ -6,7 +6,7 @@ The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function 
 ## Brief overview
 Bayesian Optimization (BO) [3,4] is an optimization framework used to solve problems of the form
 <div align="center">
-  <img src="figure/optimization_problem.png" alt="An example of function networks" width="500" alt="Equation">
+  <img src="figure/optimization_problem.png" alt="Optimization Problem" width="500" alt="Equation">
 </div>
 
 where $$f(x)$$ is an expensive-to-evaluate black-box function.
@@ -19,7 +19,7 @@ BO begins with an initial set of $n$ observations $D\_n=\{(x\_i,f(x\_i))\}\_{i=1
 
 Bayesian Optimization of Function Networks (BOFN) [5] is an advanced BO framework designed to solve optimization problems whose objective functions can be constructed as a network of functions such that outputs of some nodes serve as parts of inputs for another.
 <div align="center">
-<img src="figure/function_network_example.png" alt="An example of function networks" width="500">
+  <img src="figure/function_network_example.png" alt="An example of function networks" width="500" alt="Equation">
 
   Figure 1: An example of function networks
 </div>
