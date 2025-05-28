@@ -49,7 +49,7 @@ Recently, [1]  has extended the BOFN framework to function networks where nodes 
 To address these computational challenges, [2] recently proposed a faster-to-evaluate variant of pKGFN (Fast pKGFN) which requires solving only one acquisition function problem at each iteration. It leverages the use of EIFN [5] together with simulated intermediate outcomes from the fitted surrogate model to form a propose-to-evaluate candidate input for each individual node. These candidates are compared by using pKGFN acquisition function [1] in a cost-aware manner and there is only one node and its corresponding input are selected to evaluate in each iteration. Fast pKGFN has proven to have a competitive optimization performance to the original pKGFN and to significantly reduce the runtime by up to $$16\times$$ according to numerical experiments tested and reported in the paper.
 
 ## Contents
-This repository contains partial_kgfn and results folders.
+This repository contains partial_kgfn, results and visualization folders.
 
 - partial_kgfn consists of the following folders and files:
 1. acquisition -- acquisition function files
@@ -86,6 +86,10 @@ This repository contains partial_kgfn and results folders.
 7. run_one_trial.py -- code for running one trial of Bayesian Optimization
 
 - results folder is created to store saved models and optimization results.
+- Visualization folder contains three files:
+1. utils_decoupled_kgfn.py - codes that loads all the results and compute mean and standard errors of BO progress curve.
+2. read_results_and_plot_graphs.ipynb - a notebook that calls a load function from utils_decoupled_kgfn.py and plots the progress curve.
+3. read_wallclock.ipynb - a notebook to load results and report the average runtimes for all algorithms.
 
 ## Example code
 run_experiment.ipynb is a notebook used to run a problem. 
