@@ -50,7 +50,7 @@ However, in many applications, such as manufacturing problems, this upstream out
 
 ## Contents
 This repository contains partial_kgfn, results and visualization folders.
-
+---
 - partial_kgfn consists of the following folders and files:
 1. acquisition -- acquisition function files
     - FN_realization.py -- an AcquisitionFunction class used to sample a network realization from a function network model
@@ -84,8 +84,9 @@ This repository contains partial_kgfn, results and visualization folders.
     - gen_batch_x_fantasies.py -- code for generate X fantasies for discrete acquisition functions including fullKGFN and partialKGFN
     - posterior_mean.py -- code for computing posterior mean of the network final node's output
 7. run_one_trial.py -- code for running one trial of Bayesian Optimization
-
+---
 - results folder is created to store saved models and optimization results.
+---
 - Visualization folder contains three files used to generate BO progress curves and to report runtimes:
 1. utils_decoupled_kgfn.py - codes that loads all the results and compute mean and standard errors of BO progress curve.
 2. read_results_and_plot_graphs.ipynb - a notebook that calls a load function from utils_decoupled_kgfn.py and plots the progress curve.
