@@ -1,7 +1,7 @@
 ### Bayesian Optimization of Function Networks with Partial Evaluations
 This repository contains the code implementations for Bayesian Optimization of Function Networks with Partial Evaluations (pKGFN) and its accelerated version (fast_pKGFN).
 
-The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html)[1]. The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," available on [ArXiv](..)[2].
+The pKGFN algorithm is detailed in the paper "Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [ICML2024](https://proceedings.mlr.press/v235/buathong24a.html)[1]. The accelerated version is described in "Fast Bayesian Optimization of Function Networks with Partial Evaluations," accepted at [AutoML2025](https://openreview.net/forum?id=KwykZvmTth#discussion) and also available on [ArXiv](..)[2].
 ## Software requirements
 The entire codebase is written in python. Package requirements are as follows:
   - python=3.9
